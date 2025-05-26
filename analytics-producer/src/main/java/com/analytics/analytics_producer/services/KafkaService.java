@@ -19,32 +19,40 @@ import static com.analytics.analytics_producer.constans.topics.*;
 public class KafkaService {
 
     @Autowired
-    private KafkaTemplate<String, Object> template;
+    private KafkaTemplate<String, String> template;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public boolean sendAddToCartEvent(AddToCartEvent event){
         try {
-            template.send(addToCart, event.getProduct().getProdId(), event);
+            String jsonEvent = objectMapper.writeValueAsString(event);
+            template.send(addToCart, event.getProduct().getProdId(), jsonEvent);
             return true;
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            log.error("Error sending AddToCartEvent: {}", e.getMessage(), e);
+            return false;
         }
     }
 
     public boolean sendProductViewEvent(ProductViewEvent event){
         try {
-            template.send(viewProduct, event);
+            String jsonEvent = objectMapper.writeValueAsString(event);
+            template.send(viewProduct, jsonEvent);
             return true;
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            log.error("Error sending ProductViewEvent: {}", e.getMessage(), e);
+            return false;
         }
     }
 
     public boolean sendPurchaseEvent(PurchaseEvent event){
         try {
-            template.send(purchase, event);
+            String jsonEvent = objectMapper.writeValueAsString(event);
+            template.send(purchase, jsonEvent);
             return true;
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            log.error("Error sending PurchaseEvent: {}", e.getMessage(), e);
+            return false;
         }
     }
 

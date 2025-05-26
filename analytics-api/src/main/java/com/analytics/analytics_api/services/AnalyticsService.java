@@ -18,9 +18,15 @@ public class AnalyticsService {
 
     public Long getTotalProductViews(){
         try {
-            Long value = (Long) template.opsForValue().get("total_product_views");
-            if(value != null ) return value;
-            else return 0L;
+            Object value = template.opsForValue().get("total_product_views");
+            if(value instanceof Number) {
+                return ((Number) value).longValue();
+            } else if (value == null) {
+                return 0L;
+            } else {
+                log.warn("Unexpected type for total_product_views: {}", value.getClass().getName());
+                return 0L;
+            }
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
@@ -129,11 +135,17 @@ public class AnalyticsService {
 
     public Long getTotalAddToCarts(){
         try {
-            Long value = (Long) template.opsForValue().get("total_add_to_cart");
-            if(value != null ) return value;
-            else return 0L;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            Object value = template.opsForValue().get("total_add_to_cart");
+            if(value instanceof Number) {
+                return ((Number) value).longValue();
+            } else if (value == null) {
+                return 0L;
+            } else {
+                log.warn("Unexpected type for total_add_to_cart: {}", value.getClass().getName());
+                return 0L;
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -159,10 +171,21 @@ public class AnalyticsService {
 
     }
 
-    public Long getTotalPurchases(){
-        Long value = (Long) template.opsForValue().get("total_purchases");
-        if(value != null ) return value;
-        else return 0L;
+    public Long getTotalPurchases() {
+        try {
+            Object value = template.opsForValue().get("total_purchases");
+            if (value instanceof Number) {
+                return ((Number) value).longValue();
+            } else if (value == null) {
+                return 0L;
+            } else {
+                log.warn("Unexpected type for total_purchases: {}", value.getClass().getName());
+                return 0L;
+            }
+        } catch (Exception e) {
+            log.error("Error retrieving total_purchases from Redis: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to retrieve total purchases: " + e.getMessage());
+        }
     }
 
     public Double getTotalRevenue(){

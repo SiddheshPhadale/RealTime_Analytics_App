@@ -35,14 +35,6 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-//        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-//
-//        props.put(JsonDeserializer.TYPE_MAPPINGS,
-//                "productViewEvent:com.example.analytics.common.events.models.ProductViewEvent," +
-//                        "addToCartEvent:com.example.analytics.common.events.models.AddToCartEvent," +
-//                        "purchaseEvent:com.example.analytics.common.events.models.PurchaseEvent");
-
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

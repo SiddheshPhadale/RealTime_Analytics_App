@@ -9,7 +9,8 @@
   <description>Common DTOs for Real-time Analytics Project</description>
 
   <properties>
-    <java.version>17</java.version> </properties>
+    <java.version>21</java.version> 
+  </properties>
 
   <dependencies>
     <dependency>

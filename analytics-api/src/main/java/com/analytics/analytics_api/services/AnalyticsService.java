@@ -217,24 +217,37 @@ public class AnalyticsService {
         return sum / values.size();
     }
 
-    public Double getProductViewToCartConversionRate() {
-        Long totalViews = getTotalProductViews();
-        Long totalAddsToCart = getTotalAddToCarts();
+    private Long getSafeNumber(String key) {
+        try {
+            Object value = template.opsForValue().get(key);
+            if (value instanceof Number) {
+                return ((Number) value).longValue();
+            }
+            return 0L;
+        } catch (Exception e) {
+            log.error("Error reading key {}: {}", key, e.getMessage());
+            return 0L;
+        }
+    }
 
-        if (totalViews == 0L) {
+    public Double getProductViewToCartConversionRate() {
+        Long strictViews = getSafeNumber("funnel_unique_views");
+        Long strictCarts = getSafeNumber("funnel_unique_carts");
+
+        if (strictViews == 0L) {
             return 0.0;
         }
-        return (double) totalAddsToCart / totalViews * 100.0;
+        return (double) strictCarts / strictViews * 100.0;
     }
 
     public Double getCartToPurchaseConversionRate() {
-        Long totalAddsToCart = getTotalAddToCarts();
-        Long totalPurchases = getTotalPurchases();
+        Long strictCarts = getSafeNumber("funnel_unique_carts");
+        Long strictPurchases = getSafeNumber("funnel_unique_purchases");
 
-        if (totalAddsToCart == 0L) {
+        if (strictCarts == 0L) {
             return 0.0;
         }
-        return (double) totalPurchases / totalAddsToCart * 100.0;
+        return (double) strictPurchases / strictCarts * 100.0;
     }
 
 }

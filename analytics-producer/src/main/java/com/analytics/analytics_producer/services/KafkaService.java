@@ -3,7 +3,6 @@ package com.analytics.analytics_producer.services;
 import com.example.analytics.common.events.models.AddToCartEvent;
 import com.example.analytics.common.events.models.ProductViewEvent;
 import com.example.analytics.common.events.models.PurchaseEvent;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class KafkaService {
     public boolean sendAddToCartEvent(AddToCartEvent event){
         try {
             String jsonEvent = objectMapper.writeValueAsString(event);
-            template.send(addToCart, event.getProduct().getProdId(), jsonEvent);
+            template.send(addToCart, String.valueOf(event.getProduct().getProdId()), jsonEvent);
             return true;
         }catch (Exception e){
             log.error("Error sending AddToCartEvent: {}", e.getMessage(), e);
